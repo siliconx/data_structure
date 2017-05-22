@@ -13,7 +13,6 @@
 
 int to_postfix(char[], char[]);
 node *gen_expression_tree(char*);  // generate a expression tree
-node *binary_search_tree(node**, float);
 int in_order_output(node*);
 int post_order_output(node*);
 int leaves_count(node *root);
@@ -166,19 +165,6 @@ int to_postfix(char infix[], char postfix[]) {
     }
     postfix[index] = '\0';
     return 1;
-}
-
-node* binary_search_tree(node **root,float value) {
-    if (*root == NULL) {
-        *root = create_node(value);
-    } else if (fabs((*root)->e - value) < MIN_NORMAL) {
-        // pass
-    } else if ((*root)->e > value) {
-        binary_search_tree(&((*root)->left), value);
-    } else {
-        binary_search_tree(&((*root)->right), value);
-    }
-    return *root;
 }
 
 int leaves_count(node *root) {
