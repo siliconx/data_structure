@@ -1,5 +1,6 @@
 // @siliconx
 // 2017-05-22 14:52:58
+// 开发环境: Linux(Ubuntu 17.04), gcc 6.3.0
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,9 +40,10 @@ int main(void) {
     char name[CHAR_LEN];
     int result = 0;
     while (1) {
-        printf("who are you looking for?" COLOR_RED "(`q` to exit)\n" COLOR_END);
+        printf("who are you looking for?" COLOR_RED "(`q` to quit)\n" COLOR_END);
         scanf("%s", name);
         if (strcmp(name, "q") == 0) {
+            printf("Bye\n");
             exit(0);
         }
         result = search(name);

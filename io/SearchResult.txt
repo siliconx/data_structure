@@ -1,10 +1,10 @@
-==========
-`students[i].ID,`not found
-`students[i].name,`not found
-`students[i].data_structure,`not found
-`students[i].clang,`not found
-ID: 201518080125, name: 谭淳, data structure: 72, clang: 88, english: 99, GIS: 99
-ID: 201518080125, name: 谭淳, data_structure: 72, clang: 88, english: 99, GIS: 99
-`safas`not found
-`jsdf`not found
-ID: 201518080125, name: 谭淳, data_structure: 72, clang: 88, english: 99, GIS: 99
+`斯蒂芬`not found
+ID: 201518080109, name: 李晓妍, data_structure: 85, clang: 78, english: 84, GIS: 68
+ID: 201518080113, name: 杨家庆, data_structure: 99, clang: 67, english: 94, GIS: 91
+`斯蒂芬`not found
+ID: 201518080109, name: 李晓妍, data_structure: 85, clang: 78, english: 84, GIS: 68
+ID: 201518080113, name: 杨家庆, data_structure: 99, clang: 67, english: 94, GIS: 91
+`斯蒂芬`not found
+ID: 201518080113, name: 杨家庆, data_structure: 99, clang: 67, english: 94, GIS: 91
+ID: 201518080109, name: 李晓妍, data_structure: 85, clang: 78, english: 84, GIS: 68
+`fds`not found
