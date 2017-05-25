@@ -19,13 +19,19 @@ typedef struct {  // 景点
     char intro[N * 2];
 } ScenicSpot;
 
+typedef struct {
+    int *distances;  // 起始点到各点的距离
+    int *paths;  // 经过的顶点
+} PathDetails;
+
 Graph *graph;
 ScenicSpot *scenic_spots;
 int visited[COUNT];
 
+int menu(void);
 int initialize(void);  // 初始化
 
-int *dijkstra(int);
+PathDetails *dijkstra(int, int);
 int dfs(int);
 
 int input_matrix(void);  // 输入图的邻接矩阵
@@ -33,24 +39,70 @@ int show_matrix(void);  // 展示矩阵
 
 int input_spots(void);  // 输入景点
 int show_spots(void);  // 展示景点
+int reset(void);
 
 int main(void) {
+    int from, to, choice;
     initialize();
-
     input_matrix();
-    show_matrix();
-
     input_spots();
-    show_spots();
 
-    int *array = dijkstra(1);
-    for (int i=0; i<COUNT; i++) {
-        printf("%d ", array[i]);
+    while(1) {
+        reset();
+        menu();
+        scanf("%d", &choice);
+        switch(choice) {
+            case 1: {
+                show_spots();
+                break;
+            }
+            case 2: {
+                show_matrix();
+                break;
+            }
+            case 3: {
+                printf("from? ");
+                scanf("%d", &from);
+                printf("to? ");
+                scanf("%d", &to);
+
+                PathDetails *path_details = dijkstra(from, to);
+                printf("paths: %d#%s", from, scenic_spots[from].name);
+                for (int i=1;i<COUNT;i++) {
+                    int v = (path_details->paths)[i];
+                    if (v == -1) {
+                        break;
+                    }
+                    printf(" --%d--> %d#%s", (graph->matrix)[(path_details->paths)[i-1]][v], v, scenic_spots[v].name);
+                }
+                printf("(distance: %d)\n", (path_details->distances)[to]);
+                printf("\n");
+                break;
+            }
+            case 4: {
+                printf("from? ");
+                scanf("%d", &from);
+                dfs(from);
+                printf("END\n");
+                break;
+            }
+            default: {
+                return OK;
+            }
+        }
     }
-    printf("\n");
-    dfs(0);
-    printf("\n");
     return OK;
+}
+
+int menu(void) {
+    printf("======================================\n");
+    printf("|      1: 展示景点                   |\n");
+    printf("|      2: 展示邻接矩阵               |\n");
+    printf("|      3: 查找两个景点之间的最短距离 |\n");
+    printf("|      4: 游览整个公园               |\n");
+    printf("|      其他: 退出                    |\n");
+    printf("======================================\n");
+    printf("选: ");
 }
 
 int initialize(void) {
@@ -72,8 +124,21 @@ int initialize(void) {
     return OK;
 }
 
-int *dijkstra(int start) {
+int reset(void) {
+    // 归零已访问节点
+    for (int i=0; i<COUNT; i++) {
+        visited[i] = 0;
+    }
+    return OK;
+}
+
+PathDetails *dijkstra(int start, int end) {
     int i, shortest_dist, shortest_dist_index, current_index, distance;
+    // 从起点到终点路径的数量
+    int path_count = 0;
+    // 路径数组，按下标顺序表示从起点到终点的路径
+    int *paths = (int *) malloc(sizeof(int) * COUNT);
+    // 存储起点到各个顶点的最短路径
     int *distances = (int *) malloc(sizeof(int) * COUNT);
     short is_label[COUNT];
     for (i=0; i<COUNT; i++) {
@@ -81,8 +146,11 @@ int *dijkstra(int start) {
         distances[i] = (graph->matrix)[start][i];
         // 初始化数组
         is_label[i] = 0;
+        // 初始化路径
+        paths[i] = -1;
     }
 
+    paths[path_count++] = start;
     current_index = start;
     is_label[current_index] = 1;
 
@@ -100,12 +168,11 @@ int *dijkstra(int start) {
         }
 
         // 未找到距离最近的点，循环结束
-        if (shortest_dist_index == -1) {
+        if (shortest_dist_index == -1 || current_index == end) {
             break;
         }
-        printf("shortest_dist_index: %d\n", shortest_dist_index);
-        printf("shortest dist: %d\n", shortest_dist);
 
+        paths[path_count++] = shortest_dist_index;
         current_index = shortest_dist_index;
         is_label[current_index] = 1;
 
@@ -118,18 +185,23 @@ int *dijkstra(int start) {
                 if (distances[i] == -1) {  // 原来无通路
                     distances[i] = distance + shortest_dist;
                 } else if (distances[i] > 0
-                    && distances[i] > distance + shortest_dist) {  // 原来有通路，但是原来的距离大于新路径之和
+                    && distances[i] > distance + shortest_dist) {
+                    // 原来有通路，但是原来的距离大于新路径之和
                     distances[i] = distance + shortest_dist;
                 }
             }
         }
     }
-    return distances;
+    PathDetails *details = (PathDetails *) malloc(sizeof(PathDetails));
+    details->distances = distances;
+    details->paths = paths;
+    return details;
 }
+
 
 int dfs(int start) {
     int **matrix = graph->matrix;
-    printf("%d.%s->", start, scenic_spots[start].name);
+    printf("%d#%s --> ", start, scenic_spots[start].name);
     visited[start] = 1;
     for (int i=0; i<COUNT; i++) {
         if (visited[i] == 0 && matrix[start][i] > 0) {
@@ -179,9 +251,10 @@ int input_spots(void) {
 }
 
 int show_spots(void) {
+    printf("黄石公园景点介绍： \n");
     for (int i=0; i<COUNT; i++) {
-        printf("=============\n");
+        printf("---------------------------------------\n");
         printf("code: %d\nname: %s\nintro: %s\n", i, scenic_spots[i].name, scenic_spots[i].intro);
     }
-    printf("=============\n");
+    printf("---------------------------------------\n");
 }
