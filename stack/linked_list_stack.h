@@ -73,7 +73,7 @@ node* pop(stack *st) {
     st->top->prev->next = NULL;
     node *temp = st->top;
     st->top = st->top->prev;
-    (st->size)--g;
+    (st->size)--;
     return temp;
 }
 

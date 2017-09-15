@@ -59,7 +59,7 @@ int to_postfix(char infix[], char postfix[]) {
                     push(oprts, c);
                 } else {
                     // 否则将操作符栈中的操作符弹出，直到遇到比当前操作符优先级小的操作符，并把当前操作符入栈
-                    while ((! is_empty(oprts)) && (priority(c) <= priority(peek(oprts)))) {
+                    while ((! is_empty(oprts)) && (peek(oprts) != '(') && (priority(c) <= priority(peek(oprts)))) {
                         postfix[index++] = pop(oprts);
                     }
                     push(oprts, c);
